@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ruby - Programmable Capital on Robinhood Chain</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@400;500;700&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#3a393a",
+                        "surface-container-high": "#2a2a2b",
+                        "on-tertiary-fixed-variant": "#93001a",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-surface-variant": "#e2bebc",
+                        "on-tertiary-fixed": "#410006",
+                        "on-secondary": "#660026",
+                        "primary-container": "#9b111e",
+                        "secondary-fixed": "#ffd9de",
+                        "obsidian-surface": "#121214",
+                        "surface-tint": "#ffb3af",
+                        "on-error-container": "#ffdad6",
+                        "primary": "#ffb3af",
+                        "tertiary": "#ffb3b0",
+                        "ruby-glow": "#FF4D6D",
+                        "on-secondary-fixed": "#3f0015",
+                        "on-background": "#e5e2e3",
+                        "surface-container-low": "#1c1b1c",
+                        "ruby-deep": "#5F0A12",
+                        "tertiary-fixed": "#ffdad8",
+                        "surface-container-highest": "#353436",
+                        "on-primary-fixed-variant": "#910618",
+                        "secondary": "#ffb2be",
+                        "surface-dim": "#131314",
+                        "on-primary-fixed": "#410005",
+                        "on-tertiary-container": "#ffa7a4",
+                        "on-secondary-fixed-variant": "#900039",
+                        "inverse-on-surface": "#313031",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#ffeced",
+                        "background": "#131314",
+                        "on-surface": "#e5e2e3",
+                        "secondary-container": "#d80159",
+                        "surface": "#131314",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#353436",
+                        "inverse-primary": "#b4262d",
+                        "tertiary-container": "#9f001d",
+                        "on-primary-container": "#ffa8a3",
+                        "outline": "#a98987",
+                        "secondary-fixed-dim": "#ffb2be",
+                        "outline-variant": "#5a403f",
+                        "rhc-gold": "#D4AF37",
+                        "surface-container": "#201f20",
+                        "on-tertiary": "#68000f",
+                        "error-container": "#93000a",
+                        "obsidian-glass": "rgba(18, 18, 20, 0.7)",
+                        "on-primary": "#68000d",
+                        "tertiary-fixed-dim": "#ffb3b0",
+                        "primary-fixed-dim": "#ffb3af",
+                        "primary-fixed": "#ffdad7",
+                        "inverse-surface": "#e5e2e3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "container-max": "1440px",
+                        "margin-desktop": "64px",
+                        "gutter-desktop": "24px",
+                        "gutter-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Sora"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "display-lg": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0B;
+            color: #e5e2e3;
+        }
+        .crystal-card {
+            backdrop-filter: blur(20px);
+            background: rgba(18, 18, 20, 0.7);
+            border: 0.5px solid rgba(255, 77, 109, 0.2);
+            transition: all 0.3s ease;
+        }
+        .crystal-card:hover {
+            border-color: rgba(255, 77, 109, 0.5);
+            box-shadow: inset 0 0 20px rgba(155, 17, 30, 0.1);
+        }
+        .ruby-gradient-btn {
+            background: linear-gradient(135deg, #9B111E 0%, #E0115F 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(155, 17, 30, 0.4);
+        }
+        .ruby-gradient-btn:active {
+            transform: scale(0.96);
+        }
+        .shard-border {
+            position: relative;
+        }
+        .shard-border::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 77, 109, 0.4) 50%, transparent 100%);
+        }
+        .glass-nav {
+            background: rgba(10, 10, 11, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .animate-pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface selection:bg-ruby-glow selection:text-white overflow-x-hidden">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/10">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<img alt="Ruby Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4e9X9WlZ3FIKhcTp2wv7VNAaq8y20MJIRIdPbtPn7m6ql2oqWmyM9UoG5_nJmUHvq8GCf0AYCgfM9j5N01qraidpFbrBoH6NgNKHYHTOLYAGrMLiRiZE8bxxhnNmd2eIv9POuHEhB6Y7gktkCPt_knpXlXYtiiMlYJDdF_dkH2eNHBuP80Xb90CR9VIJGI3Q4IomuN-l9dPHBBgg6BvrJACBqSkTQFryEgKcRAhvb0b4Uf1mT4dSB"/>
+<span class="font-display-lg text-headline-md font-extrabold tracking-tight text-ruby-glow">Ruby</span>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-ruby-glow font-bold border-b-2 border-ruby-glow pb-1 font-label-caps text-label-caps" href="#how">How it Works</a>
+<a class="text-on-surface-variant font-medium hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#basket">Current Basket</a>
+<a class="text-on-surface-variant font-medium hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#stats">Protocol Stats</a>
+<a class="text-on-surface-variant font-medium hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#ecosystem">Ecosystem</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-ruby-glow cursor-pointer transition-colors" style="font-variation-settings: 'FILL' 0;">account_balance_wallet</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-ruby-glow cursor-pointer transition-colors" style="font-variation-settings: 'FILL' 0;">settings</span>
+</div>
+<button class="ruby-gradient-btn px-6 py-2 rounded-lg font-bold text-white transition-all hover:brightness-110">Buy $RUBY</button>
+</div>
+</div>
+</nav>
+<main class="relative pt-32">
+<!-- Hero Section -->
+<section class="px-margin-desktop max-w-container-max mx-auto relative mb-32">
+<!-- Atmospheric Background -->
+
+<div class="max-w-3xl space-y-8">
+<h1 class="font-display-lg text-display-lg text-on-surface">Programmable <br/><span class="text-ruby-glow">Capital</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                    Receive and create programmable mixed-asset ETF-based baskets and indices autonomously on the <span class="text-rhc-gold font-bold">Robinhood Chain</span>. Secure, rare, and high-yield.
+                </p>
+<div class="flex gap-4">
+<button class="ruby-gradient-btn px-10 py-4 rounded-xl font-bold text-white text-lg flex items-center gap-2 group">
+                        Purchase 
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- How it Works Section -->
+<section class="bg-ruby-deep/10 py-32 px-margin-desktop border-y border-ruby-glow/10" id="how">
+<div class="max-w-container-max mx-auto">
+<div class="mb-16">
+<p class="font-label-caps text-label-caps text-ruby-glow mb-4">HOW IT WORKS</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">One token in. <br/>A whole basket out.</h2>
+<p class="text-on-surface-variant mt-4 max-w-2xl font-body-md">Ruby turns creator fees into a curated basket of the market’s leading assets on Robinhood Chain, then streams it to holders. Three steps, fully autonomous.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop">
+<!-- Step 1 -->
+<div class="crystal-card p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 font-display-lg text-8xl text-ruby-glow opacity-5 select-none transition-opacity group-hover:opacity-10">01</div>
+<div class="w-12 h-12 rounded-full border border-ruby-glow/30 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-ruby-glow">analytics</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-4">Narrative detected</h3>
+<p class="text-on-surface-variant font-body-md">The leading narrative in the Robinhood Chain ecosystem is autonomously identified through on-chain volume and social sentiment.</p>
+</div>
+<!-- Step 2 -->
+<div class="crystal-card p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 font-display-lg text-8xl text-ruby-glow opacity-5 select-none transition-opacity group-hover:opacity-10">02</div>
+<div class="w-12 h-12 rounded-full border border-ruby-glow/30 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-ruby-glow">view_quilt</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-4">Basket assembled</h3>
+<p class="text-on-surface-variant font-body-md mb-6">Creator fees are used to buy the prominent tokens in that narrative, weighted by Relevance, Safety, and Profit Potential.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-ruby-deep/40 border border-ruby-glow/20 rounded-full text-[10px] font-label-caps text-ruby-glow">RELEVANCE</span>
+<span class="px-3 py-1 bg-ruby-deep/40 border border-ruby-glow/20 rounded-full text-[10px] font-label-caps text-ruby-glow">SAFETY</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="crystal-card p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 font-display-lg text-8xl text-ruby-glow opacity-5 select-none transition-opacity group-hover:opacity-10">03</div>
+<div class="w-12 h-12 rounded-full border border-ruby-glow/30 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-ruby-glow">bolt</span>
+</div>
+<h3 class="font-headline-md text-headline-md mb-4">Airdropped to holders</h3>
+<p class="text-on-surface-variant font-body-md">The basket is distributed pro-rata to every $RUBY holder, straight to your wallet. Hold one, get all.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Current Basket Carousel -->
+<section class="py-32 px-margin-desktop overflow-hidden" id="basket">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<div>
+<p class="font-label-caps text-label-caps text-ruby-glow mb-4">CURRENT BASKET: ROBINHOOD MEMES &amp; STOCKS</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">Current Basket</h2>
+</div>
+<div class="max-w-md text-right">
+<p class="text-on-surface-variant font-body-md">Just hold $RUBY. The Ruby basket tokens below are airdropped straight to your wallet automatically — no staking, no claiming, nothing to do.</p>
+</div>
+</div>
+<div class="relative">
+<div class="flex gap-gutter-desktop overflow-x-auto pb-12 snap-x no-scrollbar">
+<!-- PEPE on RHC -->
+<div class="min-w-[320px] crystal-card rounded-2xl p-6 snap-center">
+<div class="flex justify-between items-start mb-12">
+<span class="text-[10px] font-label-caps text-ruby-glow/60">ROBINHOOD MEMES</span>
+<span class="material-symbols-outlined text-ruby-glow">monitoring</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center mb-6 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A stylized digital illustration of a Pepe the Frog meme character, re-imagined as a high-end crystalline asset with deep ruby and gold highlights, set against a dark obsidian background with glowing geometric patterns." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA31MRdwjAWntp2WI-G0PMyY4dKeD7HRzN90lyftwSc1VWJwwjKIjngTLkNkpm51ZP584VoClD5XX5-VeJz08Bph6oZXkhVDBYxpTqL3eSC9h3l6g9w2YbVwAeIynUCmGe3lJ0YHCsGq4OpyJYfZyvbZ-dU_N-6Wnwa3wod5qL6-Et3PKwUjgc4Xn0ukO9DEmLvx9DKHW-LaXYRe1iZaPuhUPAA3roBHras8Z_j2S6QIYWb09Gk3PAa"/>
+</div>
+<h4 class="font-headline-md text-headline-md">$PEPE</h4>
+<p class="text-ruby-glow font-label-caps mb-8">ON RHC</p>
+<div class="w-full space-y-4 pt-6 border-t border-white/5">
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">MARKET CAP</span>
+<span class="text-on-surface font-bold">$26.5M</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">ALLOCATION</span>
+<span class="text-on-surface font-bold">20%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full w-[20%] bg-ruby-glow"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- TSLA Tokenized -->
+<div class="min-w-[320px] crystal-card rounded-2xl p-6 snap-center scale-105 border-ruby-glow/40 shadow-[0_0_40px_rgba(155,17,30,0.2)]">
+<div class="flex justify-between items-start mb-12">
+<span class="text-[10px] font-label-caps text-rhc-gold">TOKENIZED STOCKS</span>
+<span class="material-symbols-outlined text-rhc-gold">star</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center mb-6 overflow-hidden border-2 border-rhc-gold/30">
+<img class="w-full h-full object-cover" data-alt="A futuristic, crystalline representation of a Tesla logo made of deep red ruby facets and polished gold metal. The object floats in a dark void with subtle light leaks and digital grid lines reflecting on its surfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC85VBUlgRkuBWh42jy0O0KNmhQA8rbPqZL-kZ-nvWXup0bR8tmBicELxeUx_QQJxANrkwhPprs5HrNxHrEhDBcUE1OXv4ZcMciFkRuxnblWdfN24ZwpmUUgdleOAhEiyT_wgejqD36nI-T9e-P5715q1vUH0BhYtXy9-HJe2KO7zEAdqQ3xAOAwEApbKK-fj4STylLY0TYuhvpN68KaJuAKXslrkVBBtg-AjfKWVtmDCfG52pa-2Qo"/>
+</div>
+<h4 class="font-headline-md text-headline-md">$TSLA</h4>
+<p class="text-rhc-gold font-label-caps mb-8">EQUITY TOKEN</p>
+<div class="w-full space-y-4 pt-6 border-t border-white/5">
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">MARKET CAP</span>
+<span class="text-on-surface font-bold">$1.2B</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">ALLOCATION</span>
+<span class="text-on-surface font-bold">35%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full w-[35%] bg-rhc-gold shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- DOGE on RHC -->
+<div class="min-w-[320px] crystal-card rounded-2xl p-6 snap-center">
+<div class="flex justify-between items-start mb-12">
+<span class="text-[10px] font-label-caps text-ruby-glow/60">ROBINHOOD MEMES</span>
+<span class="material-symbols-outlined text-ruby-glow">trending_up</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center mb-6 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cinematic 3D render of a Dogecoin shiba inu mascot carved from a single giant ruby. The lighting is dramatic, highlighting the sharp edges and internal reflections of the gemstone. The atmosphere is elite and technical." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB92G_fsBNsbgXWyeSfSrR0RxWZg7u2QbEhYcPA0xtm0aIXMjeXrorcC-lMg3ACzgGw6RM6-hv4_2pFa6546lHQeS-OcNfoeYLS-I2dncKD6kjepnFjSMJ02rfg45xWiQ_LTRr2v-U1-yZEDgNHFdO7ktIa8PDdTa0Cv0tWcLk69aon_hhz9xxLyzyFBt53GiyGztNkRWIsvRukjRkpmWYWm6WaGpNpIglTV8qyQuru4SxJiyqbYylv"/>
+</div>
+<h4 class="font-headline-md text-headline-md">$DOGE</h4>
+<p class="text-ruby-glow font-label-caps mb-8">ON RHC</p>
+<div class="w-full space-y-4 pt-6 border-t border-white/5">
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">MARKET CAP</span>
+<span class="text-on-surface font-bold">$84M</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">ALLOCATION</span>
+<span class="text-on-surface font-bold">15%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full w-[15%] bg-ruby-glow"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- BTC ETF -->
+<div class="min-w-[320px] crystal-card rounded-2xl p-6 snap-center">
+<div class="flex justify-between items-start mb-12">
+<span class="text-[10px] font-label-caps text-ruby-glow/60">UTILITIES</span>
+<span class="material-symbols-outlined text-ruby-glow">currency_bitcoin</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center mb-6 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A highly detailed representation of a Bitcoin symbol embedded within a heavy, translucent ruby block. The block has microscopic data streams flowing through it. The background is a dark, luxury digital interface with subtle crimson glows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFhuoU-7Xpojj7EWlTttg2cDcFhM1iIbSrfIJ8sXkBamNbMChP1byeefSXFGaBs0QGwRENY6QO3KQ4ldCgFfvrLEAoHhtbX-DqIRL3DxZwQdfjh_l9oukSCdryPoY6On8BPa6FhPCorN4tx_qXSXj8U8QgYQgq6sGbYQAywWzP0xuEMWXK1fgiFUbYvftho5Qio6cDh9fIUD14fizmyJ7tBWzLRM-P8z-F4i-ohg9BGGSix8T_3lQH"/>
+</div>
+<h4 class="font-headline-md text-headline-md">$BTC</h4>
+<p class="text-ruby-glow font-label-caps mb-8">SPOT ETF TOKEN</p>
+<div class="w-full space-y-4 pt-6 border-t border-white/5">
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">MARKET CAP</span>
+<span class="text-on-surface font-bold">$1.2T</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant text-xs font-label-caps">ALLOCATION</span>
+<span class="text-on-surface font-bold">30%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full w-[30%] bg-ruby-glow"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Navigation Controls -->
+<div class="flex justify-center gap-4 mt-8">
+<button class="w-10 h-10 rounded-full border border-ruby-glow/30 flex items-center justify-center hover:bg-ruby-glow/10 transition-colors">
+<span class="material-symbols-outlined text-ruby-glow">chevron_left</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-ruby-glow"></div>
+<div class="w-2 h-2 rounded-full bg-white/20"></div>
+<div class="w-2 h-2 rounded-full bg-white/20"></div>
+<div class="w-2 h-2 rounded-full bg-white/20"></div>
+</div>
+<button class="w-10 h-10 rounded-full border border-ruby-glow/30 flex items-center justify-center hover:bg-ruby-glow/10 transition-colors">
+<span class="material-symbols-outlined text-ruby-glow">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Protocol Stats -->
+<section class="py-32 px-margin-desktop bg-obsidian-surface relative" id="stats">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+<div class="max-w-xl">
+<p class="font-label-caps text-label-caps text-ruby-glow mb-4">PROTOCOL STATS</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface mb-6">Every epoch, <br/>fully on-chain.</h2>
+<div class="flex gap-2 p-1 bg-surface-container rounded-full w-fit">
+<button class="px-6 py-2 rounded-full bg-ruby-glow text-white font-bold text-xs font-label-caps">Current Epoch</button>
+<button class="px-6 py-2 rounded-full text-on-surface-variant font-medium text-xs font-label-caps hover:text-ruby-glow transition-colors">Epoch History</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter-desktop w-full md:w-auto">
+<div class="crystal-card p-10 rounded-2xl border-l-4 border-l-ruby-glow min-w-[280px]">
+<p class="text-[10px] font-label-caps text-on-surface-variant mb-2">CURRENT EPOCH</p>
+<div class="font-display-lg text-6xl text-on-surface mb-2">03</div>
+<p class="text-xs text-on-surface-variant">4-hour epochs — basket distributed pro-rata at each close</p>
+</div>
+<div class="crystal-card p-10 rounded-2xl border-l-4 border-l-rhc-gold min-w-[280px]">
+<p class="text-[10px] font-label-caps text-on-surface-variant mb-2">NEXT DISTRIBUTION IN</p>
+<div class="font-display-lg text-6xl text-on-surface mb-2 font-mono">02:43:47</div>
+<p class="text-xs text-on-surface-variant">Streams automatically to every $RUBY holder</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Custom Baskets -->
+<section class="py-32 px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="mb-16">
+<p class="font-label-caps text-label-caps text-ruby-glow mb-4">COMING SOON</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">Custom Baskets</h2>
+<p class="text-on-surface-variant mt-4 max-w-2xl font-body-md">Burn $RUBY to create your own ETF-style basket strategy. Other users deposit in for autonomous, hands-off exposure — Ruby’s engine handles the rebalancing, and you earn a share of the profits.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-desktop">
+<div class="crystal-card p-12 rounded-3xl group relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ruby-glow to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-display-lg text-4xl text-ruby-glow/20 mb-8 block">01</span>
+<h3 class="font-headline-md text-headline-md mb-4">Burn $RUBY to create</h3>
+<p class="text-on-surface-variant font-body-md">Burn $RUBY to launch your own basket strategy — pick the tokens, set the thesis, and it goes live on-chain.</p>
+</div>
+<div class="crystal-card p-12 rounded-3xl group relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ruby-glow to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-display-lg text-4xl text-ruby-glow/20 mb-8 block">02</span>
+<h3 class="font-headline-md text-headline-md mb-4">Others deposit in</h3>
+<p class="text-on-surface-variant font-body-md">Any holder can deposit into your basket to gain exposure to your strategy, hands-off.</p>
+</div>
+<div class="crystal-card p-12 rounded-3xl group relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ruby-glow to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-display-lg text-4xl text-ruby-glow/20 mb-8 block">03</span>
+<h3 class="font-headline-md text-headline-md mb-4">Engine rebalances autonomously</h3>
+<p class="text-on-surface-variant font-body-md">Ruby's engine continuously rebalances every custom basket to keep it aligned with its strategy — no manual management required.</p>
+</div>
+<div class="crystal-card p-12 rounded-3xl group relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ruby-glow to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="font-display-lg text-4xl text-ruby-glow/20 mb-8 block">04</span>
+<h3 class="font-headline-md text-headline-md mb-4">Creators earn a share</h3>
+<p class="text-on-surface-variant font-body-md">As a basket's creator, you earn a portion of the profits it generates for depositors.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA / Widget -->
+<section class="py-32 px-margin-desktop">
+<div class="max-w-4xl mx-auto crystal-card p-12 md:p-20 rounded-[40px] text-center relative overflow-hidden border-2 border-ruby-glow/30">
+
+<p class="font-label-caps text-label-caps text-rhc-gold mb-8">PURCHASE</p>
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-6">Get <span class="text-ruby-glow">$RUBY</span></h2>
+<p class="text-on-surface-variant mb-12 font-body-lg">One token is all you hold. Grab $RUBY and every basket airdrop lands in your wallet automatically on <span class="text-rhc-gold font-bold">Robinhood Chain</span>.</p>
+<div class="max-w-lg mx-auto bg-black/40 border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 mb-10 group transition-all hover:border-ruby-glow/40">
+<code class="font-mono text-sm text-on-surface-variant truncate w-full md:w-auto flex-grow px-2">0xe67c44439f6f1d2c71bdda95348748523d397777</code>
+<button class="bg-surface-container-high hover:bg-surface-bright text-ruby-glow px-6 py-2 rounded-lg font-bold flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                        Copy
+                    </button>
+</div>
+<div class="flex flex-col sm:flex-row justify-center gap-6">
+<button class="ruby-gradient-btn px-12 py-5 rounded-2xl font-bold text-white text-lg shadow-[0_10px_30px_rgba(155,17,30,0.4)]">Buy $RUBY</button>
+<button class="bg-white/5 border border-white/10 px-12 py-5 rounded-2xl font-bold text-on-surface text-lg hover:bg-white/10 transition-colors">View chart</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-white/5 pt-24 pb-12">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter-desktop mb-24">
+<div class="md:col-span-1">
+<div class="flex items-center gap-2 mb-8">
+<img alt="Ruby Logo" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4e9X9WlZ3FIKhcTp2wv7VNAaq8y20MJIRIdPbtPn7m6ql2oqWmyM9UoG5_nJmUHvq8GCf0AYCgfM9j5N01qraidpFbrBoH6NgNKHYHTOLYAGrMLiRiZE8bxxhnNmd2eIv9POuHEhB6Y7gktkCPt_knpXlXYtiiMlYJDdF_dkH2eNHBuP80Xb90CR9VIJGI3Q4IomuN-l9dPHBBgg6BvrJACBqSkTQFryEgKcRAhvb0b4Uf1mT4dSB"/>
+<span class="font-display-lg text-headline-md font-bold text-ruby-glow">Ruby</span>
+</div>
+<p class="text-on-surface-variant font-body-md mb-8">Receive and create programmable mixed-asset ETF-based baskets and indices — autonomously, on-chain.</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface mb-6">EXPLORE</p>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">How It Works</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Current Basket</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Purchase</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Documentation</a></li>
+</ul>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface mb-6">COMMUNITY</p>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">X (Twitter)</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Telegram</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Governance</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Security Audit</a></li>
+</ul>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface mb-6">LEGAL</p>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Terms of Service</a></li>
+<li><a class="text-on-surface-variant hover:text-ruby-glow transition-colors font-body-md" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-on-surface-variant text-sm font-body-md">© 2024 Ruby. Built on Robinhood Chain. All rights reserved.</p>
+<p class="text-on-surface-variant/40 text-[10px] font-label-caps">$RUBY is a community token. Not financial advice.</p>
+</div>
+</footer>
+<!-- Interactive Layer for Light Leaks -->
+<div class="fixed inset-0 pointer-events-none z-[100] opacity-30">
+<div class="absolute w-[600px] h-[600px] rounded-full bg-ruby-glow/20 blur-[120px] -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-out" id="ruby-leak"></div>
+</div>
+<script>
+        // Micro-interaction for the ruby light leak
+        document.addEventListener('mousemove', (e) => {
+            const leak = document.getElementById('ruby-leak');
+            leak.style.left = `${e.clientX}px`;
+            leak.style.top = `${e.clientY}px`;
+        });
+
+        // Simple smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body></html>
